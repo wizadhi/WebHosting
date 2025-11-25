@@ -3,7 +3,7 @@
         <title>XSS</title>
     </head>
     <body>
-<h1><a href="myapp://com.example.deeplink/act=<svg onload=alert(1)>">xss via deeplink</a>    
+<h1><a href="myapp://com.example.deeplink/act=<script>alert(1)</script>">xss via deeplink</a>    
 </h1>
 </body>
     </html>
