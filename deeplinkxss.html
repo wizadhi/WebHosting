@@ -1,3 +1,9 @@
 <html>
-<a href="myapp://com.example.deeplink/act=<svg onload=alert(1)">xss via deeplink</a>    
-</html>
+    <head>
+        <title>XSS</title>
+    </head>
+    <body>
+<h1><a href="myapp://com.example.deeplink/act=<svg onload=alert(1)>">xss via deeplink</a>    
+</h1>
+</body>
+    </html>
