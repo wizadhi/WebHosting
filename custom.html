@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h3>Simple PostMessage PoC</h3>
+<div id="log"></div>
+
+<script>
+    const log = (msg) => {
+        const div = document.createElement("div");
+        div.textContent = msg;
+        document.getElementById("log").appendChild(div);
+    };
+
+    // Listen for the app sending a MessageChannel port
+    window.addEventListener("message", (event) => {
+        if (!event.ports || event.ports.length === 0) return;
+
+        const port = event.ports[0];
+        log("✔ Port received from app");
+
+        // Listen for messages from the Android app
+        port.onmessage = (e) => {
+            log("📥 From App: " + e.data);
+        };
+
+        // Send init_complete immediately
+        port.postMessage(JSON.stringify({ message: "init_complete" }));
+        log("📤 Sent: init_complete");
+
+        // Send success after 3s
+        setTimeout(() => {
+            port.postMessage(JSON.stringify({ message: "success" }));
+            log("📤 Sent: success");
+        }, 3000);
+    });
+</script>
+
+</body>
+</html>
