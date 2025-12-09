@@ -1,5 +1,17 @@
 <html>
     <body>
-        <button onclick="alert('xss')">Click me!!</button>
+        <button onclick="xss()">Click me!!</button>
     </body>
+
+    <script>
+        function xss() {
+            document.body.innerHTML += `
+                <iframe width="560" height="315"
+                    src="https://www.youtube.com/embed/-tJYN-eG1zk?si=tN6AUvrBuHkjybqX"
+                    frameborder="0"
+                    allowfullscreen>
+                </iframe>
+            `;
+        }
+    </script>
 </html>
